@@ -8,5 +8,18 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash BLOB NOT NULL
 )
 """)
+
+conn.execute("""
+CREATE TABLE IF NOT EXISTS workouts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    category TEXT,
+    exercise TEXT,
+    sets INTEGER,
+    reps INTEGER,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
 conn.commit()
+
 conn.close()

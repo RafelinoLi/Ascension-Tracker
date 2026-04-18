@@ -3,17 +3,67 @@
 {% block content %}
 <h2>Add Workout</h2>
 
-<form>
-    <label>Exercise:</label>
-    <input type="text"><br>
+<form method="POST">
 
-    <label>Sets:</label>
-    <input type="number"><br>
+    <!-- Category -->
+    <label>Muscle Group</label>
+    <select name="category" id="category" required onchange="updateExercises()">
+        <option value="">Select</option>
+        <option value="Chest">Chest</option>
+        <option value="Back">Back</option>
+        <option value="Biceps">Biceps</option>
+        <option value="Triceps">Triceps</option>
+        <option value="Shoulders">Shoulders</option>
+        <option value="Legs">Legs</option>
+    </select><br><br>
 
-    <label>Reps:</label>
-    <input type="number"><br>
+    <!-- Exercise -->
+    <label>Exercise</label>
+    <select name="exercise" id="exercise" required>
+        <option value="">Select category first</option>
+    </select><br><br>
 
-    <button type="submit">Save</button>
+    <!-- Sets -->
+    <label>Sets</label>
+    <input type="number" name="sets" required><br><br>
+
+    <!-- Reps -->
+    <label>Reps</label>
+    <input type="number" name="reps" required><br><br>
+
+    <button type="submit">Save Workout</button>
 </form>
+
+<script>
+function updateExercises() {
+    const category = document.getElementById("category").value;
+    const exerciseSelect = document.getElementById("exercise");
+
+    let exercises = [];
+
+    if (category === "Chest") {
+        exercises = ["Bench Press", "Incline Press", "Chest Fly"];
+    } else if (category === "Back") {
+        exercises = ["Lat Pulldown", "Deadlift", "Rows"];
+    } else if (category === "Biceps") {
+        exercises = ["Bicep Curl", "Preacher Curl", "Hammer Curl"];
+    } else if (category === "Triceps") {
+        exercises = ["Tricep Pushdown", "Lateral Raise", "Rear Delt Machine Fly"];
+    } else if (category === "Shoulders") {
+        exercises = ["Shoulder Press", "Skull Crushers", "Dips"];
+    } else if (category === "Legs") {
+        exercises = ["Squat", "Leg Press", "Hamstring Curl", "Leg Extension"];
+    }
+
+    exerciseSelect.innerHTML = "";
+
+    exercises.forEach(ex => {
+        let option = document.createElement("option");
+        option.value = ex;
+        option.text = ex;
+        exerciseSelect.appendChild(option);
+    });
+}
+</script>
 
 {% endblock %}

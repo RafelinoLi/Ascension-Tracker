@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from .db import get_db
 from .models import User
+from flask_login import current_user
 import sqlite3
 
 main = Blueprint('main', __name__)
@@ -72,9 +73,26 @@ def logout():
 def dashboard():
     return render_template('dashboard.html')
 
-@main.route('/add_workout')
+@main.route('/add_workout', methods=['GET', 'POST'])
 @login_required
 def add_workout():
+    if request.method == 'POST':
+        category = request.form['category']
+        exercise = request.form['exercise']
+        sets = request.form['sets']
+        reps = request.form['reps']
+
+        conn = get_db()
+        conn.execute("""
+            INSERT INTO workouts (user_id, category, exercise, sets, reps)
+            VALUES (?, ?, ?, ?, ?)
+        """, (current_user.id, category, exercise, sets, reps))
+        conn.commit()
+        conn.close()
+
+        flash("Workout added!")
+        return redirect(url_for('main.dashboard'))
+
     return render_template('add_workout.html')
 
 @main.route('/progress')
