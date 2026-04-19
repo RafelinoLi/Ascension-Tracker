@@ -5,7 +5,6 @@
 
 <form method="POST">
 
-    <!-- Category -->
     <label>Muscle Group</label>
     <select name="category" id="category" required onchange="updateExercises()">
         <option value="">Select</option>
@@ -17,22 +16,24 @@
         <option value="Legs">Legs</option>
     </select><br><br>
 
-    <!-- Exercise -->
     <label>Exercise</label>
     <select name="exercise" id="exercise" required>
         <option value="">Select category first</option>
     </select><br><br>
 
-    <!-- Sets -->
     <label>Sets</label>
     <input type="number" name="sets" required><br><br>
 
-    <!-- Reps -->
     <label>Reps</label>
     <input type="number" name="reps" required><br><br>
 
+    <label>Weight (kg)</label>
+    <input type="number" name="weight" step="0.1" required><br><br>
+
     <button type="submit">Save Workout</button>
 </form>
+
+<a href="{{ url_for('main.history') }}">View History</a>
 
 <script>
 function updateExercises() {
@@ -48,9 +49,9 @@ function updateExercises() {
     } else if (category === "Biceps") {
         exercises = ["Bicep Curl", "Preacher Curl", "Hammer Curl"];
     } else if (category === "Triceps") {
-        exercises = ["Tricep Pushdown", "Lateral Raise", "Rear Delt Machine Fly"];
+        exercises = ["Tricep Pushdown", "Skull Crushers", "Dips"];
     } else if (category === "Shoulders") {
-        exercises = ["Shoulder Press", "Skull Crushers", "Dips"];
+        exercises = ["Shoulder Press", "Lateral Raise", "Rear Delt Fly"];
     } else if (category === "Legs") {
         exercises = ["Squat", "Leg Press", "Hamstring Curl", "Leg Extension"];
     }

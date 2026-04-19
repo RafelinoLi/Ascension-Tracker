@@ -1,10 +1,10 @@
+import sqlite3
 import bcrypt
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from .db import get_db
 from .models import User
-from flask_login import current_user
-import sqlite3
+
 
 main = Blueprint('main', __name__)
 
@@ -34,7 +34,11 @@ def register():
 
     return render_template('register.html')
 
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/')
+def home():
+    return redirect(url_for('main.dashboard'))
+
+@main.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -71,29 +75,95 @@ def logout():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    conn = get_db()
+    user = conn.execute(
+    "SELECT xp, level FROM users WHERE id = ?",
+    (current_user.id,)
+    ).fetchone()
+
+    return render_template('dashboard.html', user=user)
 
 @main.route('/add_workout', methods=['GET', 'POST'])
 @login_required
 def add_workout():
+    EXERCISE_MULTIPLIER = {
+        "Bench Press": 1.2,
+        "Incline press": 1.2,
+        "Chest Fly": 1.6,
+        "Squat": 1,
+        "Leg Press": 1,
+        "Leg Extension": 1,
+        "Hamstring Curl": 1,
+        "Bicep Curl": 1.5,
+        "Tricep Pushdown": 1.5,
+        "Skull Crushers": 1.5,
+        "Dips": 1.4,
+        "Shoulder Press": 1.6,
+        "Lateral Raise": 1.7,
+        "Rear Delt Fly": 1.7,
+        "Deadlift": 0.8,
+        "Lat Pulldown": 1.0,
+        "Rows": 1.0,
+    }
+
+    def xp_to_next_level(level):
+        return 100 * (level ** 1.5)
+
     if request.method == 'POST':
         category = request.form['category']
         exercise = request.form['exercise']
-        sets = request.form['sets']
-        reps = request.form['reps']
+        sets = int(request.form['sets'])
+        reps = int(request.form['reps'])
+        weight = float(request.form['weight'])
+
+        multiplier = EXERCISE_MULTIPLIER.get(exercise, 1.0)
+        xp_gained = int(sets * reps * weight * multiplier * 0.1)
 
         conn = get_db()
+
         conn.execute("""
-            INSERT INTO workouts (user_id, category, exercise, sets, reps)
-            VALUES (?, ?, ?, ?, ?)
-        """, (current_user.id, category, exercise, sets, reps))
+            INSERT INTO workouts (user_id, category, exercise, sets, reps, weight)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (current_user.id, category, exercise, sets, reps, weight))
+
+        user = conn.execute(
+            "SELECT xp, level FROM users WHERE id = ?",
+            (current_user.id,)
+        ).fetchone()
+
+        new_xp = user['xp'] + xp_gained
+        level = user['level']
+
+        while new_xp >= xp_to_next_level(level):
+            new_xp -= xp_to_next_level(level)
+            level += 1
+
+        conn.execute("""
+            UPDATE users
+            SET xp = ?, level = ?
+            WHERE id = ?
+        """, (new_xp, level, current_user.id))
+
         conn.commit()
         conn.close()
 
-        flash("Workout added!")
-        return redirect(url_for('main.dashboard'))
+        flash(f"+{xp_gained} XP gained!")
+        return redirect(url_for('main.add_workout'))
 
     return render_template('add_workout.html')
+
+@main.route('/history')
+@login_required
+def history():
+    conn = get_db()
+    workouts = conn.execute("""
+        SELECT * FROM workouts
+        WHERE user_id = ?
+        ORDER BY date DESC
+    """, (current_user.id,)).fetchall()
+    conn.close()
+
+    return render_template('history.html', workouts=workouts)
 
 @main.route('/progress')
 @login_required

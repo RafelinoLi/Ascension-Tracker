@@ -6,6 +6,44 @@
 </head>
 <body class="bg-dark text-white">
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-black">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('main.dashboard') }}">Ascension Tracker</a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">Dashboard </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/add_workout' %}active{% endif %}" href="{{ url_for('main.add_workout') }}">Add Workout</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/history' %}active{% endif %}" href="{{ url_for('main.history') }}">History</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{{ url_for('main.logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/login' %}active{% endif %}" href="{{ url_for('main.login') }}">Login</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/register' %}active{% endif %}" href="{{ url_for('main.register') }}">Register</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container mt-5">
     {% with messages = get_flashed_messages() %}
         {% if messages %}

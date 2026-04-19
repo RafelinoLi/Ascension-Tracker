@@ -17,9 +17,19 @@ CREATE TABLE IF NOT EXISTS workouts (
     exercise TEXT,
     sets INTEGER,
     reps INTEGER,
+    weight REAL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 """)
+
+conn.execute("""
+ALTER TABLE users ADD COLUMN xp INTEGER DEFAULT 0
+""")
+
+conn.execute("""
+ALTER TABLE users ADD COLUMN level INTEGER DEFAULT 1
+""")
+
 conn.commit()
 
 conn.close()
