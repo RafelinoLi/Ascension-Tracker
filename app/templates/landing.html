@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-center mt-5">
+
+    <h1 class="display-3 fw-bold">Level Up Your Fitness</h1>
+    <p class="lead mt-3">
+        Track workouts and Become Stronger
+    </p>
+
+    <div class="mt-4">
+        <a href="{{ url_for('main.register') }}" class="btn btn-success btn-lg me-3">
+            Get Started
+        </a>
+
+        <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-lg">
+            Login
+        </a>
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<div class="row text-center">
+
+    <div class="col-md-4">
+        <h3>Track Workouts</h3>
+        <p>Log exercises, sets, reps, and weights easily.</p>
+    </div>
+
+    <div class="col-md-4">
+        <h3>Gain XP</h3>
+        <p>Earn experience based on your performance.</p>
+    </div>
+
+    <div class="col-md-4">
+        <h3>Build Streaks and Collect Achievements</h3>
+        <p>Stay consistent and level up faster.</p>
+    </div>
+
+</div>
+
+{% endblock %}

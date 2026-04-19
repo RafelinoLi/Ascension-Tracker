@@ -36,7 +36,9 @@ def register():
 
 @main.route('/')
 def home():
-    return redirect(url_for('main.dashboard'))
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+    return render_template('landing.html')
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
