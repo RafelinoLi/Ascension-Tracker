@@ -10,6 +10,12 @@
 body {
     background: linear-gradient(to right, #111, #222);
 }
+
+.card:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
+    cursor: pointer;
+}
 </style>
 
 {% if request.path != '/' %}

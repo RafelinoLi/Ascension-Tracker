@@ -1,14 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Dashboard</h2>
 
-<p>Streak: To be added</p>
+<h2 class="mb-4">Dashboard</h2>
 
 <p>Level: {{ user['level'] }}</p>
 <p>XP: {{ user['xp'] }}</p>
 
-<a href="{{ url_for('main.add_workout') }}">Add Workout</a>
-<a href="{{ url_for('main.progress') }}">View Progress</a>
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.add_workout') }}" class="text-decoration-none">
+            <div class="card text-center bg-dark text-white h-100 shadow">
+                <div class="card-body">
+                    <h4>Add Workout</h4>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.progress') }}" class="text-decoration-none">
+            <div class="card text-center bg-dark text-white h-100 shadow">
+                <div class="card-body">
+                    <h4>View Progress</h4>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
 
 {% endblock %}
